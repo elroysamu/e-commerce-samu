@@ -44,11 +44,8 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public String deleteCategory(int categoryId) {
-        if(!categories.isEmpty() && categoryId < categories.size()){
-            categories.removeIf(c -> c.getCategoryId() == categoryId);
-            return "success fully deleted category with id: "+ categoryId;
-        }else{
-            return "category with id "+ categoryId + " not found!";
-        }
+        return (categories.removeIf(c -> c.getCategoryId() == categoryId))
+                ? "successfully deleted category with id: "+ categoryId
+                : "category with id: " + categoryId + " not found";
     }
 }
