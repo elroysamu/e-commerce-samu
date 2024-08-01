@@ -40,7 +40,6 @@ public class ECommerceController {
 
     @DeleteMapping("api/admin/deleteCategoryById/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable int categoryId) throws FileNotFoundException {
-        categoryServiceImpl.deleteCategory(categoryId);
-        return ResponseEntity.ok("Deleted");
+        return ResponseEntity.ok(categoryServiceImpl.deleteCategory(categoryId));
     }
 }
