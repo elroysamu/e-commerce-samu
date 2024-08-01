@@ -34,12 +34,19 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public Optional<Category> getCategoryById(int categoryId) {
-        int index = categoryId-1;
-        if(index >= 0 && index< categories.size()){
-            return Optional.of(categories.get(index));
-        }else{
-            return Optional.empty();
+        int start = 0;
+        int end = categories.size()-1;
+        while(start <= end){
+            int mid = (start+end)/2;
+            if(categories.get(mid).getCategoryId() == categoryId){
+                return Optional.of(categories.get(mid));
+            }else if (categories.get(mid).getCategoryId() > categoryId){
+                end = mid-1;
+            }else{
+                start = mid+1;
+            }
         }
+        return Optional.empty();
     }
 
     @Override
