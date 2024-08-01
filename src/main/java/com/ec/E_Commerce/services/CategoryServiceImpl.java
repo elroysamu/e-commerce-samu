@@ -4,7 +4,6 @@ import com.ec.E_Commerce.models.Category;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,15 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public void addCategory(String categoryName) {
-        Category category = new Category(categories.size()+1L, categoryName);
+        Category category;
+
+        if (categories.isEmpty()){
+            category = new Category(1L, categoryName);
+        }else{
+            Long lastId = categories.get(categories.size()-1).getCategoryId();
+            category = new Category(lastId+1, categoryName);
+        }
+
         categories.add(category);
     }
 
