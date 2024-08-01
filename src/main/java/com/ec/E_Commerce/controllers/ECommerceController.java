@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,5 +36,11 @@ public class ECommerceController {
                 .orElseGet(() -> ResponseEntity
                         .notFound()
                         .build());
+    }
+
+    @DeleteMapping("api/admin/deleteCategoryById/{categoryId}")
+    public ResponseEntity<String> deleteCategory(@PathVariable int categoryId) throws FileNotFoundException {
+        categoryServiceImpl.deleteCategory(categoryId);
+        return ResponseEntity.ok("Deleted");
     }
 }

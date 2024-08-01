@@ -12,4 +12,6 @@ public interface CategoryService {
     void addCategory(String categoryName);
 
     Optional<Category> getCategoryById(int categoryId);
+
+    void deleteCategory(int categoryId);
 }

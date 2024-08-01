@@ -4,6 +4,7 @@ import com.ec.E_Commerce.models.Category;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,5 +33,10 @@ public class CategoryServiceImpl implements CategoryService{
         }else{
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void deleteCategory(int categoryId) {
+        categories.removeIf(c -> c.getCategoryId() == categoryId);
     }
 }
