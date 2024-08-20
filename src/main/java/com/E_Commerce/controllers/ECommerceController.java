@@ -1,12 +1,11 @@
-package com.ec.E_Commerce.controllers;
+package com.E_Commerce.controllers;
 
-import com.ec.E_Commerce.models.Category;
-import com.ec.E_Commerce.services.CategoryServiceImpl;
+import com.E_Commerce.models.Category;
+import com.E_Commerce.services.CategoryServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,13 +21,13 @@ public class ECommerceController {
     }
 
     @PostMapping("api/admin/addCategory")
-    public String createCategory(@RequestBody Category category){
-        categoryServiceImpl.addCategory(category.getCategoryName());
-        return "added";
+    public ResponseEntity<String> createCategory(@RequestBody Category category){
+        categoryServiceImpl.addCategory(category);
+        return ResponseEntity.ok("added");
     }
 
     @GetMapping("api/public/categoryById/{categoryId}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable int categoryId){
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long categoryId){
         Optional<Category> categoryOpt = categoryServiceImpl.getCategoryById(categoryId);
 
         return categoryOpt
@@ -39,7 +38,12 @@ public class ECommerceController {
     }
 
     @DeleteMapping("api/admin/deleteCategoryById/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable int categoryId) throws FileNotFoundException {
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId){
         return ResponseEntity.ok(categoryServiceImpl.deleteCategory(categoryId));
+    }
+
+    @PutMapping("api/admin/updateCategory/{categoryId}")
+    public ResponseEntity<String> updateCategory(@PathVariable int categoryId, @RequestBody Category category){
+        return ResponseEntity.ok(categoryServiceImpl.updateCategory(categoryId, category));
     }
 }
