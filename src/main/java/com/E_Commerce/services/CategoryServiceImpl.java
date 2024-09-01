@@ -3,7 +3,10 @@ package com.E_Commerce.services;
 import com.E_Commerce.models.Category;
 import com.E_Commerce.repositories.CategoryRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,19 +29,24 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public Optional<Category> getCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId);
-    }
+    public Optional<Category> getCategoryById(Long categoryId){return categoryRepository.findById(categoryId);}
 
     @Override
     public String deleteCategory(Long categoryId) {
-        categoryRepository.deleteById(categoryId);
-        return "deleted";
+        Category categoryToBeDeleted = categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found!"));
+        categoryRepository.delete(categoryToBeDeleted);
+        return "category with id: "+ categoryId + " deleted successfully";
     }
 
     @Override
-    public String updateCategory(int categoryId, Category category) {
-        categoryRepository.save(category);
-        return "saved";
+    public Category updateCategory(Long categoryId, Category category) {
+
+        Category savedCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
+
+        category.setCategoryId(categoryId);
+        savedCategory = categoryRepository.save(category);
+        return savedCategory;
     }
 }

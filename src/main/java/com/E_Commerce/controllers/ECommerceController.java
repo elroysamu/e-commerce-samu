@@ -2,6 +2,7 @@ package com.E_Commerce.controllers;
 
 import com.E_Commerce.models.Category;
 import com.E_Commerce.services.CategoryServiceImpl;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class ECommerceController {
     }
 
     @PostMapping("api/admin/addCategory")
-    public ResponseEntity<String> createCategory(@RequestBody Category category){
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category){
         categoryServiceImpl.addCategory(category);
         return ResponseEntity.ok("added");
     }
@@ -43,7 +44,7 @@ public class ECommerceController {
     }
 
     @PutMapping("api/admin/updateCategory/{categoryId}")
-    public ResponseEntity<String> updateCategory(@PathVariable int categoryId, @RequestBody Category category){
+    public ResponseEntity<Category> updateCategory(@PathVariable Long categoryId, @RequestBody Category category){
         return ResponseEntity.ok(categoryServiceImpl.updateCategory(categoryId, category));
     }
 }
