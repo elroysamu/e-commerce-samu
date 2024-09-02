@@ -44,7 +44,7 @@ public class ECommerceController {
     }
 
     @PutMapping("api/admin/updateCategory/{categoryId}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long categoryId, @RequestBody Category category){
+    public ResponseEntity<Category> updateCategory(@Valid @PathVariable Long categoryId, @RequestBody Category category){
         return ResponseEntity.ok(categoryServiceImpl.updateCategory(categoryId, category));
     }
 }

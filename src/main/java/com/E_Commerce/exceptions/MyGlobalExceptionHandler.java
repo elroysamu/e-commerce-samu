@@ -23,6 +23,17 @@ public class MyGlobalExceptionHandler extends RuntimeException {
                     String message = err.getDefaultMessage();
                     response.put(fieldName, message);
                 });
-        return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> myResourceNotFoundException(ResourceNotFoundException e){
+        String message = e.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<String> myApiException(ApiException e){
+        String message = e.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 }
