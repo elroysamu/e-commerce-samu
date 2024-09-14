@@ -1,20 +1,20 @@
 package com.E_Commerce.services;
 
 import com.E_Commerce.models.Category;
+import com.E_Commerce.payload.CategoryDTO;
+import com.E_Commerce.payload.CategoryResponse;
 
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.Optional;
 
 public interface CategoryService {
 
-    List<Category> getCategories();
+    CategoryResponse getCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
     Optional<Category> getCategoryById(Long categoryId);
 
-    void addCategory(Category categoryName);
+    CategoryDTO createCategory(CategoryDTO categoryDTO);
 
-    String deleteCategory(Long categoryId);
+    CategoryDTO deleteCategory(Long categoryId);
 
-    Category updateCategory(Long categoryId, Category category);
+    CategoryDTO updateCategory(Long categoryId, CategoryDTO category);
 }
