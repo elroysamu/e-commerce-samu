@@ -1,14 +1,14 @@
 package com.E_Commerce.services;
 
 import com.E_Commerce.models.Category;
-import com.E_Commerce.paylod.CategoryDTO;
-import com.E_Commerce.paylod.CategoryResponse;
+import com.E_Commerce.payload.CategoryDTO;
+import com.E_Commerce.payload.CategoryResponse;
 
 import java.util.Optional;
 
 public interface CategoryService {
 
-    CategoryResponse getCategories();
+    CategoryResponse getCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
     Optional<Category> getCategoryById(Long categoryId);
 

@@ -1,8 +1,9 @@
 package com.E_Commerce.controllers;
 
+import com.E_Commerce.config.AppConstants;
 import com.E_Commerce.models.Category;
-import com.E_Commerce.paylod.CategoryDTO;
-import com.E_Commerce.paylod.CategoryResponse;
+import com.E_Commerce.payload.CategoryDTO;
+import com.E_Commerce.payload.CategoryResponse;
 import com.E_Commerce.services.CategoryServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,8 +20,12 @@ public class ECommerceController {
     private final CategoryServiceImpl categoryServiceImpl;
 
     @GetMapping("api/public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories(){
-        return new ResponseEntity<>(categoryServiceImpl.getCategories(),HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORIES_BY, required = false) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder){
+        return new ResponseEntity<>(categoryServiceImpl.getCategories(pageNumber, pageSize, sortBy, sortOrder),HttpStatus.OK);
     }
 
     @PostMapping("api/admin/addCategory")

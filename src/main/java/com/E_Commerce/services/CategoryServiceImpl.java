@@ -3,33 +3,41 @@ package com.E_Commerce.services;
 import com.E_Commerce.exceptions.ApiException;
 import com.E_Commerce.exceptions.ResourceNotFoundException;
 import com.E_Commerce.models.Category;
-import com.E_Commerce.paylod.CategoryDTO;
-import com.E_Commerce.paylod.CategoryResponse;
+import com.E_Commerce.payload.CategoryDTO;
+import com.E_Commerce.payload.CategoryResponse;
 import com.E_Commerce.repositories.CategoryRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
 
-    @Autowired
     private CategoryRepository categoryRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
 
 
     @Override
-    public CategoryResponse getCategories() {
-        List<Category> categories = categoryRepository.findAll();
+    public CategoryResponse getCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageDetails = PageRequest.of(pageNumber,pageSize, sortByAndOrder);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+
+        List<Category> categories = categoryPage.getContent();
+
         if (categories.isEmpty()){
             throw new ApiException("No category available");
         }
@@ -40,6 +48,11 @@ public class CategoryServiceImpl implements CategoryService{
 
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOS);
+        categoryResponse.setPageNumber(categoryPage.getNumber());
+        categoryResponse.setPageSize(categoryPage.getSize());
+        categoryResponse.setTotalElements(categoryPage.getTotalElements());
+        categoryResponse.setTotalPages(categoryPage.getTotalPages());
+        categoryResponse.setLastPage(categoryPage.isLast());
 
         return categoryResponse;
     }
