@@ -12,7 +12,7 @@ public interface CategoryService {
 
     Optional<Category> getCategoryById(Long categoryId);
 
-    CategoryDTO createCategory(CategoryDTO categoryDTO);
+    CategoryDTO createCategory(CategoryDTO categoryDTO) throws InterruptedException;
 
     CategoryDTO deleteCategory(Long categoryId);
 

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-public class ECommerceController {
+public class CategoryController {
 
     private final CategoryServiceImpl categoryServiceImpl;
 
