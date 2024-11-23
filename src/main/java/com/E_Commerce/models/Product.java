@@ -26,7 +26,7 @@ public class Product {
     private String description;
     private Integer quantity;
     private Double price;
-    private Double Discount;
+    private Double discount;
     private Double specialPrice;
 
     @ManyToOne
