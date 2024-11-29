@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService{
         Page<Product> productPage = productRepository.findByCategory(category, pageRequest);
 
         List<Product> products = productPage.getContent();
-        if (products.isEmpty()) throw new ApiException("No Category Available!");
+        if (products.isEmpty()) throw new ApiException("No products Available!");
 
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
