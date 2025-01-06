@@ -1,10 +1,10 @@
 package com.E_Commerce.controllers;
 
 import com.E_Commerce.config.AppConstants;
-import com.E_Commerce.models.Product;
 import com.E_Commerce.payload.ProductDTO;
 import com.E_Commerce.payload.ProductResponse;
 import com.E_Commerce.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/admin/products/{categoryId}/product")
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody Product product,
+    public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO product,
                                                  @PathVariable Long categoryId){
         ProductDTO productDTO = productService.addProduct(categoryId, product);
 
@@ -71,7 +71,7 @@ public class ProductController {
 
     @PutMapping("/admin/products/{productId}")
     public ResponseEntity<ProductDTO> updateProduct(
-            @PathVariable Long productId,
+            @Valid @PathVariable Long productId,
             @RequestBody ProductDTO productDTO){
         ProductDTO productDTOToReturn = productService.updateProduct(productId, productDTO);
         return new ResponseEntity<>(productDTOToReturn, HttpStatus.OK);
@@ -82,7 +82,7 @@ public class ProductController {
         return new ResponseEntity<>(productService.deleteProduct(productId), HttpStatus.OK);
     }
 
-    @PutMapping("/products/{productId}/image")
+    @PutMapping("/admin/products/{productId}/image")
     public ResponseEntity<ProductDTO> updateProductImage(@PathVariable Long productId,
                                                          @RequestParam("image")MultipartFile image) throws IOException {
         ProductDTO updatedProduct = productService.updateProductImage(productId, image);

@@ -1,6 +1,5 @@
 package com.E_Commerce.services;
 
-import com.E_Commerce.models.Product;
 import com.E_Commerce.payload.ProductDTO;
 import com.E_Commerce.payload.ProductResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface ProductService {
-    ProductDTO addProduct(Long categoryId, Product product);
+    ProductDTO addProduct(Long categoryId, ProductDTO product);
 
     ProductResponse getProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
