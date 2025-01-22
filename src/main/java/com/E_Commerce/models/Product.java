@@ -6,11 +6,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Data
@@ -21,8 +21,14 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
+
+    @NotBlank
+    @Size(min = 3, message = "at least 3 characters required for product name")
     private String productName;
     private String image;
+
+    @NotBlank
+    @Size(min = 6, message = "at least 6 characters required for the description")
     private String description;
     private Integer quantity;
     private Double price;
