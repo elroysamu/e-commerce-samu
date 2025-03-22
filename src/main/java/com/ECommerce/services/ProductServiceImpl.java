@@ -2,10 +2,13 @@ package com.ECommerce.services;
 
 import com.ECommerce.exceptions.ApiException;
 import com.ECommerce.exceptions.ResourceNotFoundException;
+import com.ECommerce.models.Cart;
 import com.ECommerce.models.Category;
 import com.ECommerce.models.Product;
+import com.ECommerce.payload.CartDTO;
 import com.ECommerce.payload.ProductDTO;
 import com.ECommerce.payload.ProductResponse;
+import com.ECommerce.repositories.CartRepository;
 import com.ECommerce.repositories.CategoryRepository;
 import com.ECommerce.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -27,6 +31,8 @@ public class ProductServiceImpl implements ProductService{
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final FileService fileService;
+    private final CartRepository cartRepository;
+    private final CartService cartService;
     
     @Value("${project.image}")
     private String path;
@@ -34,11 +40,15 @@ public class ProductServiceImpl implements ProductService{
     public ProductServiceImpl(ProductRepository productRepository,
                               CategoryRepository categoryRepository,
                               ModelMapper modelMapper,
-                              FileService fileService) {
+                              FileService fileService,
+                              CartRepository cartRepository,
+                              CartService cartService) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
         this.fileService = fileService;
+        this.cartRepository = cartRepository;
+        this.cartService = cartService;
     }
 
     @Override
@@ -149,23 +159,45 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
         Product productFromDb = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("product", "productId", productId));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        productFromDb.setProductName(productDTO.getProductName());
-        productFromDb.setQuantity(productDTO.getQuantity());
-        productFromDb.setPrice(productDTO.getPrice());
-        productFromDb.setDiscount(productDTO.getDiscount());
-        productFromDb.setDescription(productDTO.getDescription());
-        double specialPrice = productFromDb.getPrice() - ((productFromDb.getDiscount() / 100) * (productFromDb.getPrice()));
-        productFromDb.setSpecialPrice(specialPrice);
+        Product product = modelMapper.map(productDTO, Product.class);
 
-        return modelMapper.map(productRepository.save(productFromDb), ProductDTO.class);
+        productFromDb.setProductName(product.getProductName());
+        productFromDb.setDescription(product.getDescription());
+        productFromDb.setQuantity(product.getQuantity());
+        productFromDb.setDiscount(product.getDiscount());
+        productFromDb.setPrice(product.getPrice());
+        productFromDb.setSpecialPrice(product.getSpecialPrice());
+
+        Product savedProduct = productRepository.save(productFromDb);
+
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+
+        List<CartDTO> cartDTOs = carts.stream().map(cart -> {
+            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+
+            List<ProductDTO> products = cart.getCartItems().stream()
+                    .map(p -> modelMapper.map(p.getProduct(), ProductDTO.class)).collect(Collectors.toList());
+
+            cartDTO.setProducts(products);
+
+            return cartDTO;
+
+        }).toList();
+
+        cartDTOs.forEach(cart -> cartService.updateProductInCarts(cart.getCartId(), productId));
+
+        return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
     @Override
     public ProductDTO deleteProduct(Long productId) {
         Product productToDelete = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+        //delete
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+        carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(), productId));
         productRepository.delete(productToDelete);
 
         return modelMapper.map(productToDelete, ProductDTO.class);
