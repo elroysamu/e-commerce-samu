@@ -42,6 +42,7 @@ public class JwtUtils {
     public String getJwtFromCookies(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, jwtCookie);
         if (cookie != null) {
+            System.out.println("samuLogs: "+ cookie.getValue());
             return cookie.getValue();
         } else {
             return null;
